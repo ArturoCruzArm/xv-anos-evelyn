@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logística del Evento - XV Años</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #fce7f3 0%, #e9d5ff 100%);
+            color: #333;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 3rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #ec4899;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #ec4899;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #fce7f3 0%, #f3e8ff 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .info-card h3 {
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .info-card p {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .info-card strong {
+            color: #ec4899;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border-left: 4px solid #ec4899;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checklist li:before {
+            content: "☐";
+            font-size: 1.5rem;
+            color: #ec4899;
+        }
+
+        .checklist li.completed:before {
+            content: "✓";
+            color: #10b981;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #ec4899 0%, #8b5cf6 100%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+
+        .timeline-item:before {
+            content: "";
+            position: absolute;
+            left: -2.6rem;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #ec4899;
+        }
+
+        .timeline-item.completed:before {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: #ec4899;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-urgent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .contact-box {
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .contact-box h3 {
+            margin-bottom: 1rem;
+        }
+
+        .contact-box a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Logística del Evento</h1>
+            <p>XV Años - 15 de Marzo, 2026</p>
+
+            <div class="nav-links">
+                <a href="index.html">Invitación</a>
+                <a href="contrato.html">Contrato</a>
+                <a href="logistica.html">Logística</a>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Información General -->
+            <section class="section">
+                <h2 class="section-title">
+                    Información General del Evento
+                </h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>⛪ Ceremonia Religiosa</h3>
+                        <p><strong>Lugar:</strong> [Por confirmar]</p>
+                        <p><strong>Dirección:</strong> León, Gto.</p>
+                        <p><strong>Hora:</strong> [Por confirmar]</p>
+                        <p><strong>Fecha:</strong> 15 de Marzo, 2026</p>
+                        <p style="margin-top: 1rem; color: #ef4444;">⚠️ Confirmar dirección exacta y hora</p>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>🎉 Recepción / Fiesta</h3>
+                        <p><strong>Lugar:</strong> [Por confirmar]</p>
+                        <p><strong>Dirección:</strong> [Por confirmar]</p>
+                        <p><strong>Hora:</strong> Después de la misa</p>
+                        <p><strong>Duración:</strong> 5 horas</p>
+                        <p style="margin-top: 1rem; color: #ef4444;">⚠️ Confirmar lugar y hora exacta</p>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>📸 Sesión Fotográfica</h3>
+                        <p><strong>Fecha:</strong> Por definir</p>
+                        <p><strong>Hora:</strong> Por definir</p>
+                        <p><strong>Lugar:</strong> Por definir</p>
+                        <p style="margin-top: 1rem; color: #ef4444;">⚠️ Pendiente de coordinación</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Timeline -->
+            <section class="section">
+                <h2 class="section-title">
+                    🕐 Cronología del Proyecto
+                </h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <p class="timeline-date">Por Definir <span class="status-badge status-urgent">⚠️ Urgente</span></p>
+                        <p>Definir monto de apartado y recibirlo</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <p class="timeline-date">Por Definir <span class="status-badge status-urgent">⚠️ Urgente</span></p>
+                        <p>Sesión fotográfica previa al evento</p>
+                        <p style="font-size: 0.9em; color: #666; margin-top: 0.5rem;">Coordinar fecha, hora y locación con la clienta</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <p class="timeline-date">1 de Marzo, 2026 <span class="status-badge status-pending">⏳ Pendiente</span></p>
+                        <p>Fecha límite para confirmación de asistencia de invitados</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <p class="timeline-date">7 de Marzo, 2026 <span class="status-badge status-urgent">⚠️ Importante</span></p>
+                        <p>Fecha límite de pago del saldo restante</p>
+                        <p style="font-size: 0.9em; color: #666; margin-top: 0.5rem;">8 días antes del evento</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <p class="timeline-date">15 de Marzo, 2026 <span class="status-badge status-pending">⏳ Pendiente</span></p>
+                        <p><strong>DÍA DEL EVENTO</strong></p>
+                        <p>Ceremonia religiosa (misa)</p>
+                        <p>Recepción y fiesta (5 horas)</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <p class="timeline-date">Abril-Mayo, 2026 <span class="status-badge status-pending">⏳ Pendiente</span></p>
+                        <p>Entrega de material final (30-45 días después del evento)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Checklist Foro 7 -->
+            <section class="section">
+                <h2 class="section-title">
+                    ✅ Checklist Foro 7 - Antes del Evento
+                </h2>
+
+                <h3 style="color: #8b5cf6; margin: 1.5rem 0 1rem;">Sesión Previa</h3>
+                <ul class="checklist">
+                    <li>Coordinar fecha de sesión con la clienta</li>
+                    <li>Coordinar hora de sesión</li>
+                    <li>Definir locación de la sesión</li>
+                    <li>Verificar equipo fotográfico (cámaras, lentes)</li>
+                    <li>Verificar dron y baterías</li>
+                    <li>Cargar todas las baterías</li>
+                    <li>Formatear tarjetas de memoria</li>
+                    <li>Llevar reflectores/iluminación portátil</li>
+                    <li>Verificar condiciones climáticas para uso del dron</li>
+                </ul>
+
+                <h3 style="color: #8b5cf6; margin: 1.5rem 0 1rem;">Día del Evento</h3>
+                <ul class="checklist">
+                    <li>Confirmar dirección exacta de la iglesia</li>
+                    <li>Confirmar dirección del salón de fiesta</li>
+                    <li>Verificar hora exacta de ceremonia</li>
+                    <li>Verificar hora exacta de inicio de fiesta</li>
+                    <li>Verificar equipo completo (cámaras, lentes, audio)</li>
+                    <li>Verificar dron, control remoto y baterías</li>
+                    <li>Cargar todas las baterías (foto, video, dron)</li>
+                    <li>Llevar baterías de repuesto</li>
+                    <li>Llevar tarjetas de memoria formateadas</li>
+                    <li>Verificar iluminación (3 flashes foto, 2 luces video)</li>
+                    <li>Confirmar recepción del saldo pendiente</li>
+                    <li>Verificar permisos para uso de dron</li>
+                    <li>Llegar 30 minutos antes a la misa</li>
+                    <li>Verificar condiciones climáticas</li>
+                </ul>
+
+                <h3 style="color: #8b5cf6; margin: 1.5rem 0 1rem;">Post-Evento</h3>
+                <ul class="checklist">
+                    <li>Respaldar todo el material (fotos, video, dron)</li>
+                    <li>Editar fotografías</li>
+                    <li>Editar video (musicalizar y titular)</li>
+                    <li>Integrar tomas de dron en el video</li>
+                    <li>Crear videoclip para proyección</li>
+                    <li>Cliente selecciona 100 fotos para impresión</li>
+                    <li>Imprimir fotografías 5x7"</li>
+                    <li>Imprimir ampliación 50x60 cm con marco</li>
+                    <li>Preparar USB con cajas impresas</li>
+                    <li>Entregar material completo al cliente</li>
+                </ul>
+            </section>
+
+            <!-- Información Pendiente -->
+            <section class="section">
+                <h2 class="section-title">
+                    ⚠️ Información Pendiente
+                </h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>🔴 Prioridad Alta</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 0.5rem;">❌ Nombre completo de la quinceañera</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Lugar de la ceremonia religiosa</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Hora de la ceremonia</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Lugar de la recepción/fiesta</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Hora de inicio de la fiesta</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Fecha de sesión fotográfica</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Hora de sesión fotográfica</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Lugar de sesión fotográfica</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Monto de apartado</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>🟡 Para Invitación Web</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 0.5rem;">❌ Código de vestuario</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Colores de la fiesta</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Mensaje especial</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Fotos de la sesión previa</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Mesa de regalos (si aplica)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>🔵 Permisos y Autorizaciones</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 0.5rem;">❌ Permiso para fotografía/video en la iglesia</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Permiso para uso de dron en iglesia</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Permiso para uso de dron en salón</li>
+                            <li style="margin-bottom: 0.5rem;">❌ Verificar restricciones de espacio aéreo</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contacto -->
+            <section class="section">
+                <div class="contact-box">
+                    <h3>📞 Información de Contacto</h3>
+                    <p style="margin-bottom: 1rem;">
+                        <strong>Cliente:</strong> Abril Romero García<br>
+                        <strong>Tel/WhatsApp:</strong> <a href="https://wa.me/5214777021235">477 702 1235</a>
+                    </p>
+                    <hr style="border: 1px solid rgba(255,255,255,0.3); margin: 1.5rem 0;">
+                    <p>
+                        <strong>Producciones Foro 7</strong><br>
+                        <strong>WhatsApp:</strong> <a href="https://wa.me/5214779203776">477-920-3776</a><br>
+                        <strong>Email:</strong> <a href="mailto:foro7producciones@gmail.com">foro7producciones@gmail.com</a><br>
+                        <strong>Ubicación:</strong> Padilla 112, Cumbres de Arbide, León, Gto.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Entregables -->
+            <section class="section">
+                <h2 class="section-title">
+                    📦 Productos a Entregar
+                </h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>🖼️ Productos Físicos</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 0.5rem;">📷 100 fotografías impresas 5x7"</li>
+                            <li style="margin-bottom: 0.5rem;">💿 1 USB con video editado en 4K</li>
+                            <li style="margin-bottom: 0.5rem;">📦 1 caja impresa para USB</li>
+                            <li style="margin-bottom: 0.5rem;">🖼️ 1 foto ampliada 50x60 cm con marco</li>
+                            <li style="margin-bottom: 0.5rem;">📦 1 caja impresa para fotografías</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>💻 Productos Digitales</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 0.5rem;">🎬 Videoclip para proyección</li>
+                            <li style="margin-bottom: 0.5rem;">📸 Todas las fotos en alta resolución</li>
+                            <li style="margin-bottom: 0.5rem;">🎥 Video completo editado y musicalizado (3 hrs)</li>
+                            <li style="margin-bottom: 0.5rem;">🚁 Tomas de dron integradas</li>
+                            <li style="margin-bottom: 0.5rem;">🌐 Invitación web personalizada</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notas Importantes -->
+            <section class="section">
+                <h2 class="section-title">
+                    💡 Notas Importantes
+                </h2>
+                <div class="info-card">
+                    <ul style="line-height: 2;">
+                        <li>💰 Paquete contratado: $6,500 (incluye dron durante todo el evento)</li>
+                        <li>🚁 El dron cubrirá la sesión, misa y fiesta completa</li>
+                        <li>⚠️ Saldo debe liquidarse <strong>8 días antes</strong> del evento</li>
+                        <li>📸 Es fundamental coordinar la sesión fotográfica previa lo antes posible</li>
+                        <li>📍 Verificar permisos para fotografía/video/dron en ambas locaciones</li>
+                        <li>🌤️ El uso del dron depende de condiciones climáticas favorables</li>
+                        <li>⏰ Confirmar itinerario completo del evento (vals, cena, baile, etc.)</li>
+                        <li>✈️ Verificar regulaciones de espacio aéreo para uso del dron</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
