@@ -15,7 +15,6 @@
 
     <!-- Favicon SVG Rosa -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌹</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌹</text></svg>">
 
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,6 +36,7 @@
             --color-dark: #1a1a1a;
             --color-cream: #fef3c7;
             --color-light-blue: #dbeafe;
+            --color-rose: #be123c;
 
             --font-display: 'Cinzel', serif;
             --font-script: 'Great Vibes', cursive;
@@ -76,6 +76,192 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 1rem;
+        }
+
+        /* ========== Envelope Intro ========== */
+        .envelope-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #0f172a 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .envelope-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .envelope {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            cursor: pointer;
+        }
+
+        .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #d4a84b 0%, #c9952e 100%);
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .envelope-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e8c76a 0%, #d4a84b 100%);
+            border-radius: 10px;
+            clip-path: polygon(0 0, 50% 40%, 100% 0, 100% 100%, 0 100%);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            width: 100%;
+            height: 55%;
+            background: linear-gradient(180deg, #f5d978 0%, #e8c76a 100%);
+            border-radius: 10px 10px 0 0;
+            transform-origin: top center;
+            transition: transform 0.6s ease;
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            z-index: 2;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        .envelope-letter {
+            position: absolute;
+            width: 90%;
+            height: 85%;
+            background: var(--color-white);
+            left: 5%;
+            top: 50%;
+            border-radius: 5px;
+            transform: translateY(0);
+            transition: transform 0.6s ease 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .envelope.open .envelope-letter {
+            transform: translateY(-120%);
+        }
+
+        .envelope-letter-text {
+            font-family: var(--font-script);
+            font-size: 1.8rem;
+            color: var(--color-primary);
+            text-align: center;
+        }
+
+        .envelope-letter-name {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--color-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .envelope-seal {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--color-rose) 0%, #9f1239 100%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .envelope.open .envelope-seal {
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+        }
+
+        .envelope-hint {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--color-secondary-light);
+            font-size: 0.9rem;
+            animation: bounce 2s infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        /* ========== Falling Petals ========== */
+        .petals-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .petal {
+            position: absolute;
+            top: -50px;
+            opacity: 0.8;
+            animation: falling linear infinite;
+        }
+
+        @keyframes falling {
+            0% {
+                transform: translateY(0) rotate(0deg) translateX(0);
+                opacity: 0.9;
+            }
+            25% {
+                transform: translateY(25vh) rotate(90deg) translateX(20px);
+            }
+            50% {
+                transform: translateY(50vh) rotate(180deg) translateX(-20px);
+            }
+            75% {
+                transform: translateY(75vh) rotate(270deg) translateX(20px);
+            }
+            100% {
+                transform: translateY(105vh) rotate(360deg) translateX(-20px);
+                opacity: 0;
+            }
+        }
+
+        /* ========== Main Content ========== */
+        .main-content {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .main-content.visible {
+            opacity: 1;
         }
 
         /* ========== Hero Section ========== */
@@ -282,7 +468,7 @@
             color: var(--color-primary);
         }
 
-        /* ========== Location Box ========== */
+        /* ========== Location & Map ========== */
         .location-box {
             text-align: center;
             background: var(--color-white);
@@ -308,6 +494,19 @@
         .location-address {
             margin-top: 0.5rem;
             color: var(--color-text-light);
+        }
+
+        .map-container {
+            margin-top: 1.5rem;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
         }
 
         .location-link {
@@ -406,42 +605,156 @@
             color: var(--color-primary);
         }
 
-        /* ========== CTA Section ========== */
-        .cta-section {
+        /* ========== RSVP Form Section ========== */
+        .rsvp-section {
             background: var(--color-white);
             padding: 4rem 2rem;
-            text-align: center;
         }
 
-        .cta-text {
-            margin: 2rem 0;
-            color: var(--color-text-light);
+        .rsvp-card {
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, var(--color-cream) 0%, var(--color-light-blue) 100%);
+            padding: 2.5rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-medium);
+            border: 3px solid var(--color-secondary);
+        }
+
+        .rsvp-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--color-primary);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.9rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--color-white);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: var(--color-white);
+            padding: 1.2rem 2rem;
+            border: none;
+            border-radius: var(--border-radius-full);
             font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-body);
         }
 
-        .cta-button {
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .form-success.show {
+            display: block;
+        }
+
+        .form-success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-success h3 {
+            color: var(--color-primary);
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-success p {
+            color: var(--color-text-light);
+        }
+
+        .whatsapp-alternative {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(30, 58, 138, 0.2);
+        }
+
+        .whatsapp-alternative p {
+            color: var(--color-text-light);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .whatsapp-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
             color: var(--color-white);
-            padding: 1.2rem 2.5rem;
+            padding: 0.8rem 1.5rem;
             border-radius: var(--border-radius-full);
             text-decoration: none;
-            font-size: 1.1rem;
             font-weight: 600;
             transition: var(--transition);
-            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
         }
 
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(37, 211, 102, 0.4);
-        }
-
-        .cta-contact {
-            margin-top: 2rem;
-            color: var(--color-text-muted);
+        .whatsapp-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
         }
 
         /* ========== Gallery Section ========== */
@@ -513,7 +826,6 @@
 
         .music-btn:hover {
             transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.5);
         }
 
         .music-btn.playing {
@@ -546,251 +858,352 @@
 
         /* ========== Animations ========== */
         @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ========== Responsive ========== */
         @media (max-width: 768px) {
-            .countdown {
-                gap: 1rem;
-            }
-
-            .countdown-item {
-                padding: 0.8rem 1rem;
-                min-width: 70px;
-            }
-
-            .countdown-number {
-                font-size: 2rem;
-            }
-
-            .info-card {
-                padding: 1.5rem;
-            }
-
-            .event-details,
-            .schedule-grid {
-                grid-template-columns: 1fr;
-            }
+            .countdown { gap: 1rem; }
+            .countdown-item { padding: 0.8rem 1rem; min-width: 70px; }
+            .countdown-number { font-size: 2rem; }
+            .info-card { padding: 1.5rem; }
+            .event-details, .schedule-grid { grid-template-columns: 1fr; }
+            .envelope { width: 280px; height: 190px; }
         }
 
         @media (max-width: 480px) {
-            .hero {
-                padding: 1.5rem;
-            }
-
-            .countdown-item {
-                min-width: 60px;
-                padding: 0.6rem 0.8rem;
-            }
-
-            .countdown-number {
-                font-size: 1.6rem;
-            }
+            .hero { padding: 1.5rem; }
+            .countdown-item { min-width: 60px; padding: 0.6rem 0.8rem; }
+            .countdown-number { font-size: 1.6rem; }
+            .envelope { width: 250px; height: 170px; }
+            .rsvp-card { padding: 1.5rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">Abril</h1>
-            <p class="hero-subtitle">Mis XV Años</p>
-            <p class="hero-theme">🌹 Tema: La Bella y la Bestia 🌹</p>
-            <div class="decorative-line"></div>
-            <p class="hero-date">15 de Marzo, 2026</p>
-            <p class="hero-location">Salón Laja, León, Guanajuato</p>
-
-            <!-- Countdown -->
-            <div class="countdown" id="countdown">
-                <div class="countdown-item">
-                    <span class="countdown-number" id="days">--</span>
-                    <span class="countdown-label">Días</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="hours">--</span>
-                    <span class="countdown-label">Horas</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="minutes">--</span>
-                    <span class="countdown-label">Min</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="seconds">--</span>
-                    <span class="countdown-label">Seg</span>
-                </div>
+    <!-- Envelope Intro -->
+    <div class="envelope-container" id="envelopeContainer">
+        <div class="envelope" id="envelope">
+            <div class="envelope-back"></div>
+            <div class="envelope-letter">
+                <span class="envelope-letter-text">Estás invitado a mis</span>
+                <span class="envelope-letter-name">XV Años</span>
             </div>
+            <div class="envelope-front"></div>
+            <div class="envelope-flap"></div>
+            <div class="envelope-seal">🌹</div>
+            <p class="envelope-hint">Toca para abrir</p>
         </div>
-    </section>
+    </div>
 
-    <!-- Info Section -->
-    <section class="info-section">
-        <div class="container">
-            <div class="info-card">
-                <div class="theme-banner">
-                    <span>🏰</span> Un cuento de hadas se hace realidad <span>🌹</span>
-                </div>
-                <h2 class="info-title">Detalles del Evento</h2>
+    <!-- Falling Petals -->
+    <div class="petals-container" id="petalsContainer"></div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Abril</h1>
+                <p class="hero-subtitle">Mis XV Años</p>
+                <p class="hero-theme">🌹 Tema: La Bella y la Bestia 🌹</p>
                 <div class="decorative-line"></div>
+                <p class="hero-date">15 de Marzo, 2026</p>
+                <p class="hero-location">Salón Laja, León, Guanajuato</p>
 
-                <div class="event-details">
-                    <div class="detail-item">
-                        <div class="detail-icon">⛪</div>
-                        <h3 class="detail-title">Ceremonia Religiosa</h3>
-                        <div class="detail-content">
-                            <p><strong>2:00 PM</strong></p>
-                            <p>Misa dentro del salón</p>
-                            <p>Salón Laja</p>
+                <!-- Countdown -->
+                <div class="countdown" id="countdown">
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="days">--</span>
+                        <span class="countdown-label">Días</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="hours">--</span>
+                        <span class="countdown-label">Horas</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="minutes">--</span>
+                        <span class="countdown-label">Min</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="seconds">--</span>
+                        <span class="countdown-label">Seg</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Info Section -->
+        <section class="info-section">
+            <div class="container">
+                <div class="info-card">
+                    <div class="theme-banner">
+                        <span>🏰</span> Un cuento de hadas se hace realidad <span>🌹</span>
+                    </div>
+                    <h2 class="info-title">Detalles del Evento</h2>
+                    <div class="decorative-line"></div>
+
+                    <div class="event-details">
+                        <div class="detail-item">
+                            <div class="detail-icon">⛪</div>
+                            <h3 class="detail-title">Ceremonia Religiosa</h3>
+                            <div class="detail-content">
+                                <p><strong>2:00 PM</strong></p>
+                                <p>Misa dentro del salón</p>
+                                <p>Salón Laja</p>
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-icon">🍽️</div>
+                            <h3 class="detail-title">Recepción</h3>
+                            <div class="detail-content">
+                                <p><strong>3:30 PM</strong></p>
+                                <p>Comida</p>
+                                <p>Salón Laja</p>
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-icon">👗</div>
+                            <h3 class="detail-title">Código de Vestimenta</h3>
+                            <div class="detail-content">
+                                <p>Vestimenta formal</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="detail-item">
-                        <div class="detail-icon">🍽️</div>
-                        <h3 class="detail-title">Recepción</h3>
-                        <div class="detail-content">
-                            <p><strong>3:30 PM</strong></p>
-                            <p>Comida</p>
-                            <p>Salón Laja</p>
+                    <div class="rose-divider">🌹</div>
+
+                    <div class="location-box">
+                        <h3 class="location-title">📍 Lugar del Evento</h3>
+                        <p class="location-name">Salón de Eventos Laja</p>
+                        <p class="location-address">Blvd. Campestre 79, Peñitas<br>37180 León de los Aldama, Gto.</p>
+
+                        <div class="map-container">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3721.2!2d-101.6547!3d21.1056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842b75f9c1a3c5e5%3A0x1234567890abcdef!2sSal%C3%B3n%20De%20Eventos%20Laja!5e0!3m2!1ses!2smx!4v1234567890"
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
                         </div>
+
+                        <a href="https://maps.google.com/?q=Salon+De+Eventos+Laja+Blvd.+Campestre+79+Peñitas+37180+León" target="_blank" rel="noopener" class="location-link">
+                            Abrir en Google Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Schedule Section -->
+        <section class="schedule-section">
+            <div class="container">
+                <h2 class="schedule-title">✨ Itinerario del Día ✨</h2>
+                <div class="schedule-grid">
+                    <div class="schedule-item">
+                        <div class="schedule-time">2:00 PM</div>
+                        <div class="schedule-event">⛪ Ceremonia Religiosa<br><small>(Misa dentro del salón)</small></div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">3:30 PM</div>
+                        <div class="schedule-event">🍽️ Comida</div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">4:00 PM</div>
+                        <div class="schedule-event">💃 Vals<br><small>"La Bella y la Bestia"</small></div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">5:00 PM</div>
+                        <div class="schedule-event">🎵 Música y Baile</div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">10:00 PM</div>
+                        <div class="schedule-event">🌙 Cierre del Evento</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Message Section -->
+        <section class="message-section">
+            <div class="container">
+                <div class="message-box">
+                    <p>"El cuento de hadas más hermoso comienza hoy, y quiero que tú seas parte de esta historia mágica. Tu presencia hará que este día sea verdaderamente especial."</p>
+                    <p class="message-quote">Con amor, Abril 💛</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- RSVP Form Section -->
+        <section class="rsvp-section">
+            <div class="container">
+                <div class="rsvp-card">
+                    <h2 class="info-title">Confirma tu Asistencia</h2>
+                    <div class="decorative-line"></div>
+
+                    <form class="rsvp-form" id="rsvpForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nombre">Nombre completo *</label>
+                                <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre">
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono">Teléfono</label>
+                                <input type="tel" id="telefono" name="telefono" placeholder="10 dígitos">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="asistencia">¿Asistirás? *</label>
+                                <select id="asistencia" name="asistencia" required>
+                                    <option value="">Selecciona...</option>
+                                    <option value="si">Sí, con gusto asistiré</option>
+                                    <option value="no">No podré asistir</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="personas">Número de personas</label>
+                                <select id="personas" name="personas">
+                                    <option value="1">1 persona</option>
+                                    <option value="2">2 personas</option>
+                                    <option value="3">3 personas</option>
+                                    <option value="4">4 personas</option>
+                                    <option value="5">5 o más</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mensaje">Mensaje para Abril (opcional)</label>
+                            <textarea id="mensaje" name="mensaje" placeholder="Escribe un mensaje especial..."></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn" id="submitBtn">
+                            Enviar Confirmación
+                        </button>
+                    </form>
+
+                    <div class="form-success" id="formSuccess">
+                        <div class="form-success-icon">🌹</div>
+                        <h3>¡Gracias por confirmar!</h3>
+                        <p>Hemos recibido tu confirmación. ¡Te esperamos!</p>
                     </div>
 
-                    <div class="detail-item">
-                        <div class="detail-icon">👗</div>
-                        <h3 class="detail-title">Código de Vestimenta</h3>
-                        <div class="detail-content">
-                            <p>Vestimenta formal</p>
-                        </div>
+                    <div class="whatsapp-alternative">
+                        <p>O si prefieres, confirma por WhatsApp:</p>
+                        <a href="https://wa.me/5214777021235?text=Hola,%20confirmo%20mi%20asistencia%20a%20los%20XV%20años%20de%20Abril" class="whatsapp-btn" target="_blank">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            WhatsApp
+                        </a>
                     </div>
                 </div>
-
-                <div class="rose-divider">🌹</div>
-
-                <div class="location-box">
-                    <h3 class="location-title">📍 Lugar del Evento</h3>
-                    <p class="location-name">Salón de Eventos Laja</p>
-                    <p class="location-address">Blvd. Campestre 79, Peñitas<br>37180 León de los Aldama, Gto.</p>
-                    <a href="https://maps.google.com/?q=Salon+De+Eventos+Laja+Blvd.+Campestre+79+Peñitas+37180+León" target="_blank" rel="noopener" class="location-link">
-                        Ver en Google Maps
-                    </a>
-                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Schedule Section -->
-    <section class="schedule-section">
-        <div class="container">
-            <h2 class="schedule-title">✨ Itinerario del Día ✨</h2>
-            <div class="schedule-grid">
-                <div class="schedule-item">
-                    <div class="schedule-time">2:00 PM</div>
-                    <div class="schedule-event">⛪ Ceremonia Religiosa<br><small>(Misa dentro del salón)</small></div>
-                </div>
-
-                <div class="schedule-item">
-                    <div class="schedule-time">3:30 PM</div>
-                    <div class="schedule-event">🍽️ Comida</div>
-                </div>
-
-                <div class="schedule-item">
-                    <div class="schedule-time">4:00 PM</div>
-                    <div class="schedule-event">💃 Vals<br><small>"La Bella y la Bestia"</small></div>
-                </div>
-
-                <div class="schedule-item">
-                    <div class="schedule-time">5:00 PM</div>
-                    <div class="schedule-event">🎵 Música y Baile</div>
-                </div>
-
-                <div class="schedule-item">
-                    <div class="schedule-time">10:00 PM</div>
-                    <div class="schedule-event">🌙 Cierre del Evento</div>
-                </div>
+        <!-- Gallery Section -->
+        <section class="gallery-section">
+            <div class="container">
+                <h2 class="info-title">Galería de Fotos</h2>
+                <div class="decorative-line"></div>
+                <p class="gallery-placeholder">
+                    Las fotos de la sesión previa se mostrarán aquí próximamente
+                </p>
+                <div class="gallery-icon">🌹</div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Message Section -->
-    <section class="message-section">
-        <div class="container">
-            <div class="message-box">
-                <p>"El cuento de hadas más hermoso comienza hoy, y quiero que tú seas parte de esta historia mágica. Tu presencia hará que este día sea verdaderamente especial."</p>
-                <p class="message-quote">Con amor, Abril 💛</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container">
-            <h2 class="info-title">Confirma tu Asistencia</h2>
-            <div class="decorative-line"></div>
-            <p class="cta-text">
-                Por favor, confirma tu asistencia antes del <strong>1 de marzo de 2026</strong>
-            </p>
-            <a href="https://wa.me/5214777021235?text=Hola,%20confirmo%20mi%20asistencia%20a%20los%20XV%20años%20de%20Abril" class="cta-button">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                Confirmar por WhatsApp
-            </a>
-            <p class="cta-contact">
-                Abril Romero García<br>
-                Tel: 477 702 1235
-            </p>
-        </div>
-    </section>
-
-    <!-- Gallery Section -->
-    <section class="gallery-section">
-        <div class="container">
-            <h2 class="info-title">Galería de Fotos</h2>
-            <div class="decorative-line"></div>
-            <p class="gallery-placeholder">
-                Las fotos de la sesión previa se mostrarán aquí próximamente
-            </p>
-            <div class="gallery-icon">🌹</div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p class="footer-brand">Producciones Foro 7</p>
-        <p>Fotografía, Video e Invitaciones Web</p>
-        <p>WhatsApp: 477-920-3776</p>
-        <p>foro7producciones@gmail.com</p>
-        <p class="footer-note">Invitación digital creada con amor por Foro 7</p>
-    </footer>
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-brand">Producciones Foro 7</p>
+            <p>Fotografía, Video e Invitaciones Web</p>
+            <p>WhatsApp: 477-920-3776</p>
+            <p>foro7producciones@gmail.com</p>
+            <p class="footer-note">Invitación digital creada con amor por Foro 7</p>
+        </footer>
+    </div>
 
     <!-- Music Player -->
-    <div class="music-player">
+    <div class="music-player" style="display: none;" id="musicPlayer">
         <span class="music-tooltip">Toca para escuchar la música</span>
-        <button class="music-btn" id="musicBtn" aria-label="Reproducir música">
-            🎵
-        </button>
+        <button class="music-btn" id="musicBtn" aria-label="Reproducir música">🎵</button>
         <audio id="bgMusic" loop preload="auto">
             <source src="musica-fondo.mp3" type="audio/mpeg">
         </audio>
     </div>
 
-    <!-- Countdown Script -->
     <script>
+        // ========== Envelope Animation ==========
+        (function() {
+            const envelope = document.getElementById('envelope');
+            const envelopeContainer = document.getElementById('envelopeContainer');
+            const mainContent = document.getElementById('mainContent');
+            const musicPlayer = document.getElementById('musicPlayer');
+            const bgMusic = document.getElementById('bgMusic');
+            const musicBtn = document.getElementById('musicBtn');
+
+            envelope.addEventListener('click', function() {
+                envelope.classList.add('open');
+
+                setTimeout(function() {
+                    envelopeContainer.classList.add('hidden');
+                    mainContent.classList.add('visible');
+                    musicPlayer.style.display = 'block';
+
+                    // Auto-play music
+                    bgMusic.volume = 0.5;
+                    bgMusic.play().then(function() {
+                        musicBtn.textContent = '🔊';
+                        musicBtn.classList.add('playing');
+                    }).catch(function() {
+                        // Autoplay blocked
+                    });
+
+                    // Start petals
+                    startPetals();
+                }, 1200);
+            });
+        })();
+
+        // ========== Falling Petals ==========
+        function startPetals() {
+            const container = document.getElementById('petalsContainer');
+            const petalEmojis = ['🌹', '🌸', '💮', '🏵️'];
+
+            function createPetal() {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+                petal.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                petal.style.animationDelay = Math.random() * 2 + 's';
+
+                container.appendChild(petal);
+
+                setTimeout(function() {
+                    petal.remove();
+                }, 15000);
+            }
+
+            // Create initial petals
+            for (let i = 0; i < 5; i++) {
+                setTimeout(createPetal, i * 500);
+            }
+
+            // Continue creating petals
+            setInterval(createPetal, 2000);
+        }
+
+        // ========== Countdown ==========
         (function() {
             const eventDate = new Date('March 15, 2026 14:00:00').getTime();
 
@@ -818,33 +1231,70 @@
             setInterval(updateCountdown, 1000);
         })();
 
-        // Music Player
+        // ========== Music Player ==========
         (function() {
             const musicBtn = document.getElementById('musicBtn');
             const bgMusic = document.getElementById('bgMusic');
             let isPlaying = false;
 
-            bgMusic.volume = 0.5;
-
             musicBtn.addEventListener('click', function() {
-                if (isPlaying) {
+                if (bgMusic.paused) {
+                    bgMusic.play();
+                    musicBtn.textContent = '🔊';
+                    musicBtn.classList.add('playing');
+                } else {
                     bgMusic.pause();
                     musicBtn.textContent = '🎵';
                     musicBtn.classList.remove('playing');
-                } else {
-                    bgMusic.play().catch(function(e) {
-                        console.log('Autoplay prevented:', e);
-                    });
-                    musicBtn.textContent = '🔊';
-                    musicBtn.classList.add('playing');
                 }
-                isPlaying = !isPlaying;
             });
 
-            bgMusic.addEventListener('ended', function() {
-                musicBtn.textContent = '🎵';
-                musicBtn.classList.remove('playing');
+            bgMusic.addEventListener('play', function() {
+                isPlaying = true;
+            });
+
+            bgMusic.addEventListener('pause', function() {
                 isPlaying = false;
+            });
+        })();
+
+        // ========== RSVP Form ==========
+        (function() {
+            const form = document.getElementById('rsvpForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const formSuccess = document.getElementById('formSuccess');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Enviando...';
+
+                const formData = new FormData(form);
+                const data = {
+                    nombre: formData.get('nombre'),
+                    telefono: formData.get('telefono'),
+                    asistencia: formData.get('asistencia'),
+                    personas: formData.get('personas'),
+                    mensaje: formData.get('mensaje')
+                };
+
+                // Send via WhatsApp as fallback
+                const mensaje = `*Confirmación XV Años Abril*%0A%0A` +
+                    `👤 Nombre: ${data.nombre}%0A` +
+                    `📱 Teléfono: ${data.telefono || 'No proporcionado'}%0A` +
+                    `✅ Asistencia: ${data.asistencia === 'si' ? 'Sí asistiré' : 'No podré asistir'}%0A` +
+                    `👥 Personas: ${data.personas}%0A` +
+                    `💬 Mensaje: ${data.mensaje || 'Sin mensaje'}`;
+
+                // Show success message
+                setTimeout(function() {
+                    form.style.display = 'none';
+                    formSuccess.classList.add('show');
+
+                    // Open WhatsApp with the data
+                    window.open(`https://wa.me/5214777021235?text=${mensaje}`, '_blank');
+                }, 500);
             });
         })();
     </script>
