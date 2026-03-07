@@ -102,35 +102,6 @@
             z-index: 2;
         }
         .envelope.open .envelope-flap { transform: rotateX(180deg); }
-        .envelope-letter {
-            position: absolute;
-            width: 88%;
-            height: 82%;
-            background: linear-gradient(135deg, #fff 0%, #fef3c7 100%);
-            left: 6%;
-            top: 50%;
-            border-radius: 8px;
-            transform: translateY(0);
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 1.5rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-        .envelope.open .envelope-letter { transform: translateY(-130%); }
-        .envelope-letter-text {
-            font-family: 'Great Vibes', cursive;
-            font-size: 1.6rem;
-            color: var(--primary);
-        }
-        .envelope-letter-name {
-            font-family: 'Cinzel', serif;
-            font-size: 1.3rem;
-            color: var(--secondary);
-            margin-top: 0.3rem;
-        }
         .envelope-seal {
             position: absolute;
             width: 65px;
@@ -761,6 +732,7 @@
                 right: auto;
             }
             .envelope { width: 280px; height: 190px; }
+            .carta-nombre { font-size: 1.25rem; }
         }
         @media (max-width: 480px) {
             section { padding: 3rem 1.5rem; }
@@ -775,10 +747,6 @@
     <div class="envelope-container" id="envelopeContainer">
         <div class="envelope" id="envelope">
             <div class="envelope-back"></div>
-            <div class="envelope-letter">
-                <span class="envelope-letter-text">Estás invitado a mis</span>
-                <span class="envelope-letter-name">XV Años</span>
-            </div>
             <div class="envelope-front"></div>
             <div class="envelope-flap"></div>
             <div class="envelope-seal">🌹</div>
