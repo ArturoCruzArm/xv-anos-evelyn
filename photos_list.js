@@ -1,7 +1,7 @@
 // Lista de fotos generada automaticamente
 // XV Anos Evelyn Estefania - La Bella y la Bestia
-// Total de fotos: 110
-// Generado: 2026-03-07 17:04:21
+// Total de fotos: 113
+// Generado: 2026-03-07 17:17:16
 
 const photos = [
     {
@@ -553,6 +553,21 @@ const photos = [
         "name": "DSC_1110",
         "path": "imagenes/DSC_1110.webp",
         "filename": "DSC_1110.webp"
+    },
+    {
+        "name": "bella 1",
+        "path": "imagenes/bella 1.png",
+        "filename": "bella 1.png"
+    },
+    {
+        "name": "bella 2",
+        "path": "imagenes/bella 2.png",
+        "filename": "bella 2.png"
+    },
+    {
+        "name": "bella 3",
+        "path": "imagenes/bella 3.png",
+        "filename": "bella 3.png"
     }
 ];
 

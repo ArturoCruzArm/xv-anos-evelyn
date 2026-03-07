@@ -9,7 +9,12 @@ import glob
 import json
 
 def generate_photo_list(photos_dir="imagenes", output_file="photos_list.js"):
-    webp_files = sorted(glob.glob(os.path.join(photos_dir, "*.webp")))
+    webp_files = sorted(
+        glob.glob(os.path.join(photos_dir, "*.webp")) +
+        glob.glob(os.path.join(photos_dir, "*.png")) +
+        glob.glob(os.path.join(photos_dir, "*.jpg")) +
+        glob.glob(os.path.join(photos_dir, "*.jpeg"))
+    )
 
     if not webp_files:
         print(f"No se encontraron archivos WebP en {photos_dir}")
