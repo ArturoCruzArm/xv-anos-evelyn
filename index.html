@@ -711,6 +711,58 @@
         .music-btn:hover { transform: scale(1.1); }
         .music-btn.playing { animation: pulse 1.5s ease-in-out infinite; }
 
+        /* ===== VIDEO SECTION ===== */
+        .video-section {
+            background: linear-gradient(180deg, #0f172a 0%, #1e3a8a22 50%, #0f172a 100%);
+            padding: 4rem 1.5rem;
+            text-align: center;
+        }
+        .video-section-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .video-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: var(--secondary);
+            margin-bottom: 0.4rem;
+            text-shadow: 0 2px 12px rgba(251,191,36,0.3);
+        }
+        .video-subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            color: var(--secondary-light);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            opacity: 0.7;
+        }
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid rgba(251,191,36,0.4);
+            box-shadow: 0 0 40px rgba(30,58,138,0.6), 0 0 80px rgba(251,191,36,0.1);
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .video-audio-note {
+            margin-top: 1rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        .video-audio-note span {
+            color: var(--secondary);
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .form-grid { grid-template-columns: 1fr; }
@@ -793,6 +845,18 @@
 
             <div class="scroll-indicator" onclick="document.querySelector('.section-light').scrollIntoView({behavior:'smooth'})">
                 <div class="scroll-arrow"></div>
+            </div>
+        </section>
+
+        <!-- Video -->
+        <section class="video-section">
+            <div class="video-section-inner">
+                <h2 class="video-title">Video de Evelyn</h2>
+                <p class="video-subtitle">Mis XV Años · La Bella y la Bestia</p>
+                <div class="video-wrapper">
+                    <div id="ytPlayer"></div>
+                </div>
+                <p class="video-audio-note">🎵 La música de fondo se <span>pausa automáticamente</span> mientras el video reproduce</p>
             </div>
         </section>
 
@@ -1011,7 +1075,56 @@
     </div>
 
     <script>
-        // Envelope
+        // ── YouTube IFrame API ──────────────────────────────
+        var ytPlayer;
+        var musicWasPlaying = false;
+
+        window.onYouTubeIframeAPIReady = function() {
+            ytPlayer = new YT.Player('ytPlayer', {
+                videoId: 'AVSBd-jojdQ',
+                playerVars: {
+                    rel: 0,
+                    modestbranding: 1,
+                    playsinline: 1
+                },
+                events: {
+                    onStateChange: function(e) {
+                        const music = document.getElementById('bgMusic');
+                        const btn   = document.getElementById('musicBtn');
+
+                        if (e.data === YT.PlayerState.PLAYING) {
+                            // Video empieza → pausar música de fondo
+                            musicWasPlaying = !music.paused;
+                            if (!music.paused) {
+                                music.pause();
+                                btn.textContent = '🎵';
+                                btn.classList.remove('playing');
+                            }
+                        } else if (
+                            e.data === YT.PlayerState.PAUSED ||
+                            e.data === YT.PlayerState.ENDED
+                        ) {
+                            // Video pausa o termina → reanudar música si estaba sonando
+                            if (musicWasPlaying) {
+                                music.play().then(() => {
+                                    btn.textContent = '🔊';
+                                    btn.classList.add('playing');
+                                }).catch(() => {});
+                            }
+                        }
+                    }
+                }
+            });
+        };
+
+        // Cargar el script de YouTube API dinámicamente
+        (function() {
+            var tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            document.head.appendChild(tag);
+        })();
+
+        // ── Envelope ────────────────────────────────────────
         document.getElementById('envelope').addEventListener('click', function() {
             this.classList.add('open');
             setTimeout(() => {
