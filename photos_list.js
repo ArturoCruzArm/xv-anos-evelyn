@@ -5516,17 +5516,17 @@ const photos = [
     },
     {
         "name": "bella 1",
-        "path": "imagenes/bella 1.png",
+        "path": "imagenes/bella%201.png",
         "filename": "bella 1.png"
     },
     {
         "name": "bella 2",
-        "path": "imagenes/bella 2.png",
+        "path": "imagenes/bella%202.png",
         "filename": "bella 2.png"
     },
     {
         "name": "bella 3",
-        "path": "imagenes/bella 3.png",
+        "path": "imagenes/bella%203.png",
         "filename": "bella 3.png"
     }
 ];
