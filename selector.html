@@ -351,6 +351,18 @@
 
         let currentPhotoIndex = 0;
         let selections = typeof defaultSelections !== 'undefined' ? {...defaultSelections} : {};
+
+        const STORAGE_KEY = 'xv_evelyn';
+        function loadSelections() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) selections = { ...selections, ...JSON.parse(saved) };
+            } catch(e) {}
+        }
+        function saveSelections() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(selections)); } catch(e) {}
+        }
+        loadSelections();
         let activeFilter = 'all';
 
         function renderGallery() {
@@ -421,14 +433,14 @@
                 const idx = cats.indexOf(option);
                 if (idx > -1) { cats.splice(idx, 1); this.classList.remove('selected'); }
                 else { cats.push(option); this.classList.add('selected'); }
-                updateStats(); renderGallery();
+                updateStats(); renderGallery(); saveSelections();
             });
         });
 
         document.getElementById('editNotes').addEventListener('input', function() {
             const photo = photos[currentPhotoIndex];
             if (!selections[photo.name]) selections[photo.name] = { categories: [], notes: '' };
-            selections[photo.name].notes = this.value;
+            selections[photo.name].notes = this.value; saveSelections();
         });
 
         function updateStats() {
@@ -487,7 +499,7 @@
 
         function limpiarSeleccion() {
             if (confirm('¿Limpiar toda la selección?')) {
-                selections = {}; updateStats(); renderGallery();
+                selections = {}; saveSelections(); updateStats(); renderGallery(); saveSelections();
             }
         }
 
