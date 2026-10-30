@@ -15,7 +15,7 @@ const labels = {0: 'Selección anterior', 1: 'Lista enviada'};
 const status = document.getElementById('saveStatus');
 function showCount(index, data) {
     const count = Object.values(data).filter(v => v.categories?.some(c => c !== 'descartada')).length;
-    document.querySelector('[data-list="' + index + '"]').textContent = labels[index] + ': ' + count + ' fotos';
+    document.querySelector('[data-list="' + index + '"]').textContent = 'Ver ' + labels[index].toLowerCase() + ' · ' + count + ' fotos';
 }
 function clean(data) {
     return Object.fromEntries(Object.entries(data || {}).filter(([k,v]) => names.has(k) && v && Array.isArray(v.categories)));
@@ -62,8 +62,9 @@ function useList(index) {
             showCount(index, data);
             localStorage.setItem('xv_evelyn_list_' + index, JSON.stringify(data));
             if (list !== index) return;
+            const changed = JSON.stringify(selections) !== JSON.stringify(data);
             selections = data; previous = clone(data);
-            renderGallery(); updateStats();
+            if (changed) { renderGallery(); updateStats(); }
         }
     });
     engine = engines[index]; engine.refresh();
