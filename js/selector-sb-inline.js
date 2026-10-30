@@ -1,156 +1,90 @@
-// selector-sb-inline.js — Supabase sync para selectores inline Foro 7
-// Slug: xv-anos-evelyn | Storage key: xv_evelyn
 (function () {
-    const SUPABASE_URL  = 'https://nzpujmlienzfetqcgsxz.supabase.co';
-    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56cHVqbWxpZW56ZmV0cWNnc3h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODYzMzYsImV4cCI6MjA5MDI2MjMzNn0.xl3lsb-KYj5tVLKTnzpbsdEGoV9ySnswH4eyRuyEH1s';
-    const EVENTO_SLUG   = 'xv-anos-evelyn';
-    const SB_KEY        = 'xv_evelyn';
-    const SB_H = { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json' };
-
-    const SESSION_KEY = 'foro7_sid';
-    let sid = localStorage.getItem(SESSION_KEY);
-    if (!sid) { sid = crypto.randomUUID(); localStorage.setItem(SESSION_KEY, sid); }
-
-    let eventoId   = null;
-    let sbOk       = true;
-    let _syncing   = false;
-    let _syncTimer = null;
-
-    async function getEventoId() {
-        if (eventoId) return eventoId;
-        const r = await fetch(SUPABASE_URL + '/rest/v1/eventos?slug=eq.' + EVENTO_SLUG + '&select=id&limit=1', { headers: SB_H });
-        const rows = await r.json();
-        eventoId = rows[0] ? rows[0].id : null;
-        return eventoId;
-    }
-
-    // Sync selections snapshot to Supabase (single row, foto_index=0, datos=full object)
-    async function sbSync(sels) {
-        if (!sbOk) return;
-        try {
-            const eid = await getEventoId();
-            if (!eid) return;
-            const entries = Object.entries(sels).filter(function(e) {
-                var s = e[1];
-                return s && ((s.categories && s.categories.length) || s.notes);
+'use strict';
+const BASE = 'https://nzpujmlienzfetqcgsxz.supabase.co/rest/v1/';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56cHVqbWxpZW56ZmV0cWNnc3h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODYzMzYsImV4cCI6MjA5MDI2MjMzNn0.xl3lsb-KYj5tVLKTnzpbsdEGoV9ySnswH4eyRuyEH1s';
+const headers = {apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type':'application/json'};
+const eid = '68dcc77f-e02d-4bea-beac-6a95f66ae539';
+const sid = crypto.randomUUID();
+const names = new Set(photos.map(p => p.name));
+const clone = v => JSON.parse(JSON.stringify(v));
+let list = Number(localStorage.getItem('evelyn_active_list') || '1');
+let previous = {};
+let engine;
+const engines = {};
+const labels = {0: 'Selección anterior', 1: 'Lista enviada'};
+const status = document.getElementById('saveStatus');
+function showCount(index, data) {
+    const count = Object.values(data).filter(v => v.categories?.some(c => c !== 'descartada')).length;
+    document.querySelector('[data-list="' + index + '"]').textContent = labels[index] + ': ' + count + ' fotos';
+}
+function clean(data) {
+    return Object.fromEntries(Object.entries(data || {}).filter(([k,v]) => names.has(k) && v && Array.isArray(v.categories)));
+}
+async function request(url, options = {}) {
+    const r = await fetch(BASE + url, {...options, headers:{...headers,...options.headers}, cache:'no-store'});
+    if (!r.ok) throw new Error('No se pudo guardar: ' + r.status);
+    return r.status === 204 || options.method === 'POST' ? null : r.json();
+}
+async function row(index) {
+    return (await request('selecciones?evento_id=eq.' + eid + '&foto_index=eq.' + index + '&select=datos&limit=1'))[0]?.datos || {};
+}
+function useList(index) {
+    list = index; localStorage.setItem('evelyn_active_list', String(index));
+    activeFilter = 'selected';
+    document.querySelectorAll('.btn-filter').forEach(b => b.classList.toggle('active', b.dataset.filter === 'selected'));
+    document.querySelectorAll('[data-list]').forEach(b => b.classList.toggle('active', Number(b.dataset.list) === index));
+    document.getElementById('currentList').textContent = labels[index];
+    selections = clean(JSON.parse(localStorage.getItem('xv_evelyn_list_' + index) || '{}'));
+    previous = clone(selections); renderGallery(); updateStats();
+    if (!engines[index]) engines[index] = createSelectionSync({
+        key: 'xv_evelyn_list_' + index,
+        status: text => { if (list === index) status.textContent = text; },
+        read: async () => clean(await row(index)),
+        write: async batch => {
+            const remote = await row(index);
+            const data = clean(remote);
+            Object.entries(batch).forEach(([name, change]) => {
+                if (change.value === null) delete data[name]; else data[name] = change.value;
             });
-            if (!entries.length) return;
-            // Store as individual rows keyed by filename index, plus full snapshot in datos
-            var snapshot = {};
-            entries.forEach(function(e) { snapshot[e[0]] = e[1]; });
-            var _clockKey = SB_KEY + '_clock';
-            var _clock = 0;
-            try { _clock = Number(localStorage.getItem(_clockKey) || '0'); } catch(e) {}
-            _clock++;
-            try { localStorage.setItem(_clockKey, String(_clock)); } catch(e) {}
-            snapshot._sync = { clock: _clock, sid: sid, updatedAt: new Date().toISOString() };
-            await fetch(SUPABASE_URL + '/rest/v1/selecciones?on_conflict=evento_id,foto_index', {
-                method: 'POST',
-                headers: Object.assign({}, SB_H, { 'Prefer': 'resolution=merge-duplicates,return=minimal' }),
-                body: JSON.stringify([{
-                    evento_id: eid,
-                    session_id: sid,
-                    foto_index: 0,
-                    impresion: false,
-                    invitacion: false,
-                    descartada: false,
-                    ampliacion: false,
-                    datos: snapshot,
-                    code_version: 5
-                }])
+            const revision = crypto.randomUUID();
+            data._sync = {clock: Number(remote._sync?.clock || 0) + 1, sid, revision,
+                listName:labels[index], updatedAt:new Date().toISOString()};
+            await request('selecciones?on_conflict=evento_id,foto_index', {
+                method:'POST', headers:{Prefer:'resolution=merge-duplicates,return=minimal'},
+                body: JSON.stringify([{evento_id:eid, session_id:sid, foto_index:index,
+                    impresion:false, ampliacion:false, invitacion:false, descartada:false,
+                    datos:data, code_version:6}])
             });
-        } catch(e) { sbOk = false; }
-    }
-
-    async function sbLoad(isPoll) {
-        if (!sbOk) return;
-        try {
-            const eid = await getEventoId();
-            if (!eid) return;
-            const r = await fetch(
-                SUPABASE_URL + '/rest/v1/selecciones?evento_id=eq.' + eid + '&select=foto_index,datos',
-                { headers: SB_H }
-            );
-            const rows = await r.json();
-
-            // Merge all datos snapshots from Supabase
-            var sb = {};
-            rows.forEach(function(row) {
-                if (row.datos && typeof row.datos === 'object') {
-                    Object.assign(sb, row.datos);
-                }
-            });
-
-            var merged;
-            if (isPoll) {
-                merged = sb;
-            } else {
-                var local = {};
-                try { local = JSON.parse(localStorage.getItem(SB_KEY) || '{}'); } catch(e) {}
-                merged = Object.assign({}, sb);
-                Object.entries(local).forEach(function(e) {
-                    var s = e[1];
-                    if (s && ((s.categories && s.categories.length) || s.notes)) merged[e[0]] = s;
-                });
-            }
-
-            _syncing = true;
-            try {
-                localStorage.setItem(SB_KEY, JSON.stringify(merged));
-                if (typeof renderGallery === 'function') renderGallery();
-            } finally { _syncing = false; }
-
-            if (!isPoll) {
-                if (Object.keys(merged).length) sbSync(merged).catch(function(){});
-                sbRegistrarVisita();
-                mostrarBanner(merged);
-            }
-        } catch(e) { sbOk = false; }
-    }
-
-    async function sbRegistrarVisita() {
-        try {
-            const eid = await getEventoId();
-            if (!eid) return;
-            await fetch(SUPABASE_URL + '/rest/v1/visitas', {
-                method: 'POST',
-                headers: Object.assign({}, SB_H, { 'Prefer': 'return=minimal' }),
-                body: JSON.stringify({ evento_id: eid, pagina: 'selector', session_id: sid })
-            });
-        } catch(e) {}
-    }
-
-    function mostrarBanner(sels) {
-        if (document.getElementById('banner-sin-sel')) return;
-        if (Object.keys(sels).some(function(k) { var s = sels[k]; return s && s.categories && s.categories.length; })) return;
-        var cfg = window.CONFIG || window.LIMITS || {};
-        var fecha = cfg.fechaEvento || cfg.fecha;
-        if (fecha && new Date(fecha) > new Date()) return;
-        var banner = document.createElement('div');
-        banner.id = 'banner-sin-sel';
-        banner.style.cssText = 'background:#78350f;color:#fcd34d;text-align:center;padding:12px 20px;font-size:.88rem;position:sticky;top:0;z-index:200;line-height:1.5;';
-        banner.innerHTML = '\uD83D\uDCF8 <strong>\u00a1Tus fotos est\u00e1n listas!</strong> A\u00fan no has seleccionado ninguna. \u00a1Empieza ahora! <button onclick="this.parentElement.remove()" style="margin-left:12px;background:transparent;border:1px solid #fcd34d;color:#fcd34d;padding:1px 8px;border-radius:4px;cursor:pointer;">\u00d7</button>';
-        document.body.insertBefore(banner, document.body.firstChild);
-    }
-
-    // Patch localStorage to detect saves from inline selector
-    var _origSet = localStorage.setItem.bind(localStorage);
-    localStorage.setItem = function(key, value) {
-        _origSet(key, value);
-        if (key === SB_KEY && !_syncing) {
-            clearTimeout(_syncTimer);
-            _syncTimer = setTimeout(function() {
-                try { sbSync(JSON.parse(value)); } catch(e) {}
-            }, 600);
+            const saved = await row(index);
+            if (saved._sync?.revision !== revision) throw new Error('Cambio sin confirmar; se reintentará');
+        },
+        apply: data => {
+            showCount(index, data);
+            localStorage.setItem('xv_evelyn_list_' + index, JSON.stringify(data));
+            if (list !== index) return;
+            selections = data; previous = clone(data);
+            renderGallery(); updateStats();
         }
-    };
-
-    document.addEventListener('DOMContentLoaded', function() {
-        sbLoad(false);
-        setInterval(function() {
-            var open = window.modalOpen ||
-                document.querySelector('.modal[style*="block"],.modal.active,.modal.show,#photoModal[style*="flex"],#photoModal[style*="block"]');
-            if (!open) sbLoad(true);
-        }, 30000);
     });
+    engine = engines[index]; engine.refresh();
+}
+window.saveEvelynSelections = function () {
+    const data = clean(selections);
+    showCount(list, data);
+    localStorage.setItem('xv_evelyn_list_' + list, JSON.stringify(data));
+    for (const name of new Set([...Object.keys(previous), ...Object.keys(data)])) {
+        if (JSON.stringify(previous[name]) !== JSON.stringify(data[name])) engine.change(name, data[name] || null);
+    }
+    previous = clone(data);
+};
+// Preserve the legacy browser snapshot for recovery, never merge it into both lists.
+if (!localStorage.getItem('xv_evelyn_respaldo'))
+    localStorage.setItem('xv_evelyn_respaldo', localStorage.getItem('xv_evelyn') || '{}');
+document.querySelectorAll('[data-list]').forEach(b => b.addEventListener('click', () => { closeModal(); useList(Number(b.dataset.list)); }));
+useList(list === 0 ? 0 : 1);
+const otherList = list === 0 ? 1 : 0;
+row(otherList).then(data => showCount(otherList, clean(data))).catch(() => {});
+setInterval(() => { for (const e of Object.values(engines)) e.refresh(); }, 15000);
+window.addEventListener('online', () => { for (const e of Object.values(engines)) e.refresh(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) engine.refresh(); });
 })();

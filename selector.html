@@ -263,12 +263,24 @@
             .modal-nav { font-size: 2rem; padding: 14px 10px; }
             .option-buttons { grid-template-columns: 1fr; }
         }
+
+        #saveStatus {position:sticky;top:0;z-index:100;background:#172033;color:white;text-align:center;padding:12px;margin:0}
+        #selectorMenu summary {cursor:pointer;padding:16px;text-align:center;color:var(--gold);background:#14213a}
+        .list-picker {text-align:center;padding:18px}.list-picker p{padding:8px}.list-picker .active{background:var(--gold);color:#111}
+        .photo-toggle{position:relative;z-index:10;margin:12px}
+        .modal.photo-expanded .modal-options{display:none}
+        .modal.photo-expanded .modal-body{display:block}
+        .modal.photo-expanded .modal-image-container{width:100%;max-width:none;height:80vh}
+        .modal.photo-expanded #modalImage{width:100%;height:100%;max-height:80vh;object-fit:contain}
+        @media(max-width:768px){.photos-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.photo-card img{height:210px}.modal-content{width:100%;max-height:100dvh}.btn{min-height:44px}}
     </style>
 </head>
 <body>
     <div class="loading" id="loading"><div class="spinner"></div></div>
 
-    <header class="header">
+    <p id="saveStatus" role="status">Cargando selecciones…</p>
+<details id="selectorMenu" open><summary>Menú del selector · minimizar / mostrar</summary>
+<header class="header">
         <h1 class="main-title">Selector de Fotos</h1>
         <p class="subtitle">XV Años · Evelyn Estefanía · La Bella y la Bestia</p>
         <div class="instructions">
@@ -295,17 +307,24 @@
                 <div class="stat-card"><div class="stat-icon">🗑️</div><div class="stat-info"><h3>Descartadas</h3><div class="stat-count" id="count-descartada">0</div></div></div>
             </div>
             <div class="action-buttons">
-                <button class="btn btn-filter active" data-filter="all"><i class="fas fa-images"></i> Todas</button>
+                <button class="btn btn-filter active" data-filter="selected">Elegidas</button>
+                <button class="btn btn-filter" data-filter="sin">Sin clasificar</button>
+                <button class="btn btn-filter" data-filter="all"><i class="fas fa-images"></i> Todas</button>
                 <button class="btn btn-filter" data-filter="ampliacion"><i class="fas fa-expand"></i> Ampliación</button>
                 <button class="btn btn-filter" data-filter="impresion"><i class="fas fa-print"></i> Impresión</button>
                 <button class="btn btn-filter" data-filter="redes_sociales"><i class="fas fa-share-alt"></i> Redes</button>
                 <button class="btn btn-filter" data-filter="invitaciones_web"><i class="fas fa-envelope"></i> Inv. Web</button>
                 <button class="btn btn-filter" data-filter="descartada"><i class="fas fa-trash"></i> Descartadas</button>
                 <button class="btn btn-export" onclick="exportarSeleccion()"><i class="fab fa-whatsapp"></i> Enviar Reporte</button>
+                <button class="btn" onclick="descargarReporte()">Descargar reporte</button><button class="btn" onclick="copiarReporte()">Copiar resumen</button><button class="btn" onclick="descargarJSON()">Exportar JSON</button>
                 <button class="btn btn-clear" onclick="limpiarSeleccion()"><i class="fas fa-eraser"></i> Limpiar Todo</button>
             </div>
         </div>
 
+    </div>
+</details>
+<div class="list-picker"><strong>Selección independiente:</strong><button class="btn" data-list="1">Lista enviada</button><button class="btn" data-list="0">Selección anterior</button><p id="currentList"></p><p>Cada lista guarda sus propias marcas. Usa «Elegidas» para verlas.</p></div>
+<div class="container">
         <section class="gallery-section">
             <div class="photos-grid" id="photosGrid"></div>
         </section>
@@ -316,6 +335,7 @@
             <span class="modal-close" onclick="closeModal()">&times;</span>
             <button class="modal-nav modal-nav-prev" onclick="navigatePhoto(-1)"><i class="fas fa-chevron-left"></i></button>
             <button class="modal-nav modal-nav-next" onclick="navigatePhoto(1)"><i class="fas fa-chevron-right"></i></button>
+            <button class="btn photo-toggle" onclick="document.getElementById('photoModal').classList.toggle('photo-expanded')">Ampliar foto / mostrar opciones</button>
             <div class="modal-body">
                 <div class="modal-image-container">
                     <img id="modalImage" src="" alt="">
@@ -331,6 +351,7 @@
                         <div class="option-btn" data-option="invitaciones_web"><span class="option-icon">💌</span><div class="option-label">Inv. Web</div></div>
                         <div class="option-btn" data-option="descartada"><span class="option-icon">🗑️</span><div class="option-label">Descartar</div></div>
                     </div>
+<div class="action-buttons"><button class="btn" onclick="saveSelections();closeModal()">Guardar y cerrar</button><button class="btn" onclick="borrarActual()">Borrar esta selección</button><button class="btn" onclick="descargarFoto(false)">Descargar JPG</button><button class="btn" onclick="descargarFoto(true)">Descargar y cerrar</button></div>
                     <div class="edit-section">
                         <label><i class="fas fa-edit"></i> Comentarios o Ediciones Requeridas</label>
                         <textarea id="editNotes" placeholder="Ejemplo: Recortar fondo, mejorar iluminación, eliminar objetos..."></textarea>
@@ -360,10 +381,10 @@
             } catch(e) {}
         }
         function saveSelections() {
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(selections)); } catch(e) {}
+            try { window.saveEvelynSelections?.(); } catch(e) { document.getElementById('saveStatus').textContent = 'No se pudo guardar en este dispositivo'; }
         }
         loadSelections();
-        let activeFilter = 'all';
+        let activeFilter = 'selected';
 
         function renderGallery() {
             const grid = document.getElementById('photosGrid');
@@ -379,7 +400,10 @@
 
             let shown = 0;
             photos.forEach((photo, index) => {
-                if (activeFilter !== 'all' && (!selections[photo.name] || !selections[photo.name].categories.includes(activeFilter))) return;
+                const cats = selections[photo.name]?.categories || [];
+                if (activeFilter === 'selected' && !cats.some(c => c !== 'descartada')) return;
+                if (activeFilter === 'sin' && cats.length) return;
+                if (!['all','selected','sin'].includes(activeFilter) && !cats.includes(activeFilter)) return;
                 shown++;
                 const card = document.createElement('div');
                 card.className = 'photo-card';
@@ -446,7 +470,7 @@
         function updateStats() {
             const counts = { ampliacion:0, impresion:0, redes_sociales:0, invitaciones_web:0, descartada:0 };
             Object.values(selections).forEach(s =>
-                s.categories.forEach(cat => { if (counts[cat] !== undefined) counts[cat]++; }));
+                (s.categories || []).forEach(cat => { if (counts[cat] !== undefined) counts[cat]++; }));
             Object.keys(counts).forEach(cat =>
                 document.getElementById(`count-${cat}`).textContent = counts[cat]);
             return counts;
@@ -461,7 +485,7 @@
             });
         });
 
-        function exportarSeleccion() {
+        function textoReporte() {
             const stats = updateStats();
             let msg = '🌹 SELECCIÓN DE FOTOS - XV AÑOS EVELYN ESTEFANÍA\n';
             msg += '═══════════════════════════════════════════\n\n';
@@ -494,7 +518,7 @@
                 notas.forEach(p => { msg += `   📸 Foto #${p.num}: ${selections[p.name].notes}\n`; });
             }
             msg += `\n📅 Generado: ${new Date().toLocaleString('es-MX')}\n`;
-            window.open(`https://wa.me/524779203776?text=${encodeURIComponent(msg)}`, '_blank');
+            return document.getElementById('currentList').textContent + '\n' + msg;
         }
 
         function limpiarSeleccion() {
@@ -516,11 +540,45 @@
             }
         });
     </script>
+    <script>
+        function exportarSeleccion() { window.open('https://wa.me/524779203776?text=' + encodeURIComponent(textoReporte()), '_blank'); }
+        function bajarArchivo(blob, filename) {
+            const url = URL.createObjectURL(blob), a = document.createElement('a');
+            a.href=url; a.download=filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 3000);
+        }
+        function descargarReporte() { bajarArchivo(new Blob([textoReporte()],{type:'text/plain;charset=utf-8'}),'seleccion-evelyn.txt'); }
+        function descargarJSON() { bajarArchivo(new Blob([JSON.stringify({lista:document.getElementById('currentList').textContent,selecciones:selections},null,2)],{type:'application/json'}),'seleccion-evelyn.json'); }
+        async function copiarReporte() {
+            try {await navigator.clipboard.writeText(textoReporte()); alert('Resumen copiado');}
+            catch(e) {alert('No se pudo copiar; usa Descargar reporte');}
+        }
+        function borrarActual() {
+            delete selections[photos[currentPhotoIndex].name]; saveSelections(); updateStats();renderGallery();openModal(currentPhotoIndex);
+        }
+        async function descargarFoto(cerrar) {
+            const photo=photos[currentPhotoIndex];
+            try {
+                const r=await fetch(photo.path); if(!r.ok) throw new Error('Descarga');
+                let blob=await r.blob();
+                if(!/jpe?g/.test(blob.type)) {
+                    const image=await createImageBitmap(blob), canvas=document.createElement('canvas');
+                    canvas.width=image.width;canvas.height=image.height;canvas.getContext('2d').drawImage(image,0,0);
+                    blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.95));image.close();
+                }
+                bajarArchivo(blob,photo.name+'.jpg'); if(cerrar) closeModal();
+            } catch(e) {alert('No se pudo descargar la foto. Intenta nuevamente.');}
+        }
+        const menu=document.getElementById('selectorMenu');
+        menu.open=localStorage.getItem('evelyn_menu')!=='closed';
+        menu.addEventListener('toggle',()=>localStorage.setItem('evelyn_menu',menu.open?'open':'closed'));
+        document.getElementById('photoModal').addEventListener('click', e => {if(e.target.id==='photoModal')closeModal()});
+    </script>
     <script src="photos_list.js?v=1"></script>
     <script src="default_selections.js?v=1"></script>
     <script>renderGallery(); updateStats();</script>
     <script src="visitas.js?v=1"></script>
-    <script src="js/selector-sb-inline.js?v=1"></script>
+    <script src="js/reliable-sync.js?v=20261030"></script>
+    <script src="js/selector-sb-inline.js?v=20261030"></script>
 <script src="js/foro7-footer.js?v=1"></script>
 </body>
 </html>
