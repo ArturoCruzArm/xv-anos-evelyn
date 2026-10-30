@@ -267,7 +267,7 @@
 
         #saveStatus {position:sticky;top:0;z-index:100;background:#172033;color:white;text-align:center;padding:12px;margin:0}
         #selectorMenu summary {cursor:pointer;padding:16px;text-align:center;color:var(--gold);background:#14213a}
-        .list-picker {text-align:center;padding:18px;background:#172033;border-bottom:2px solid var(--gold)}.list-picker .btn{background:#243653;color:white;border:2px solid #e8c76a;margin:8px;font-size:1rem;min-height:52px}.list-picker p{padding:8px}.list-picker .active{background:var(--gold);color:#111}
+        .badge.impresion_antes{background:#7c3aed;color:white}.option-btn[data-option="impresion_antes"].selected{background:#a78bfa}.list-picker {text-align:center;padding:18px;background:#172033;border-bottom:2px solid var(--gold)}.list-picker .btn{background:#243653;color:white;border:2px solid #e8c76a;margin:8px;font-size:1rem;min-height:52px}.list-picker p{padding:8px}.list-picker .active{background:var(--gold);color:#111}
         .photo-toggle{position:relative;z-index:10;margin:12px}
         .modal.photo-expanded .modal-options{display:none}
         .modal.photo-expanded .modal-body{display:block}
@@ -280,7 +280,7 @@
     <div class="loading" id="loading"><div class="spinner"></div></div>
 
     <p id="saveStatus" role="status">Cargando selecciones…</p>
-<div class="list-picker"><strong>Selección independiente:</strong><button class="btn" data-list="1">Ver lista enviada · 90 fotos</button><button class="btn" data-list="0">Ver selección anterior · 177 fotos</button><p id="currentList"></p><p>Cada lista guarda sus propias marcas. Usa «Elegidas» para verlas.</p></div>
+
 <details id="selectorMenu" open><summary>Menú del selector · minimizar / mostrar</summary>
 <header class="header">
         <h1 class="main-title">Selector de Fotos</h1>
@@ -290,7 +290,7 @@
             <p style="margin-top:8px;"><strong>Categorías disponibles:</strong></p>
             <ul style="list-style:none;padding:0;margin-top:8px;">
                 <li>📸 <strong>Ampliación</strong> — Para ampliar e imprimir en gran tamaño</li>
-                <li>🖼️ <strong>Impresión</strong> — Para imprimir en tamaño estándar (5×7)</li>
+                <li>🖼️ <strong>Impresión</strong> — Antes y ahora son marcas independientes; una foto puede tener ambas. Usa «Coinciden» para compararlas.</li>
                 <li>📱 <strong>Redes Sociales</strong> — Para compartir en redes sociales</li>
                 <li>💌 <strong>Inv. Web</strong> — Para usar en la invitación digital</li>
                 <li>🗑️ <strong>Descartar</strong> — Fotos que no deseas usar</li>
@@ -303,7 +303,7 @@
         <div class="control-panel">
             <div class="stats-row">
                 <div class="stat-card"><div class="stat-icon">📸</div><div class="stat-info"><h3>Ampliación</h3><div class="stat-count" id="count-ampliacion">0</div></div></div>
-                <div class="stat-card"><div class="stat-icon">🖼️</div><div class="stat-info"><h3>Impresión</h3><div class="stat-count" id="count-impresion">0</div></div></div>
+                <div class="stat-card"><div class="stat-icon">🕘</div><div class="stat-info"><h3>Impresión antes</h3><div class="stat-count" id="count-impresion_antes">0</div></div></div><div class="stat-card"><div class="stat-icon">🖼️</div><div class="stat-info"><h3>Impresión ahora</h3><div class="stat-count" id="count-impresion">0</div></div></div><div class="stat-card"><div class="stat-icon">🔁</div><div class="stat-info"><h3>Coinciden</h3><div class="stat-count" id="count-coinciden">0</div></div></div>
                 <div class="stat-card"><div class="stat-icon">📱</div><div class="stat-info"><h3>Redes Sociales</h3><div class="stat-count" id="count-redes_sociales">0</div></div></div>
                 <div class="stat-card"><div class="stat-icon">💌</div><div class="stat-info"><h3>Inv. Web</h3><div class="stat-count" id="count-invitaciones_web">0</div></div></div>
                 <div class="stat-card"><div class="stat-icon">🗑️</div><div class="stat-info"><h3>Descartadas</h3><div class="stat-count" id="count-descartada">0</div></div></div>
@@ -313,7 +313,7 @@
                 <button class="btn btn-filter" data-filter="sin">Sin clasificar</button>
                 <button class="btn btn-filter" data-filter="all"><i class="fas fa-images"></i> Todas</button>
                 <button class="btn btn-filter" data-filter="ampliacion"><i class="fas fa-expand"></i> Ampliación</button>
-                <button class="btn btn-filter" data-filter="impresion"><i class="fas fa-print"></i> Impresión</button>
+                <button class="btn btn-filter" data-filter="impresion_antes">🕘 Impresión antes</button><button class="btn btn-filter" data-filter="impresion"><i class="fas fa-print"></i> Impresión ahora</button><button class="btn btn-filter" data-filter="coinciden">🔁 Coinciden</button>
                 <button class="btn btn-filter" data-filter="redes_sociales"><i class="fas fa-share-alt"></i> Redes</button>
                 <button class="btn btn-filter" data-filter="invitaciones_web"><i class="fas fa-envelope"></i> Inv. Web</button>
                 <button class="btn btn-filter" data-filter="descartada"><i class="fas fa-trash"></i> Descartadas</button>
@@ -348,7 +348,7 @@
                     <p class="modal-subtitle">Puedes elegir una o varias opciones</p>
                     <div class="option-buttons">
                         <div class="option-btn" data-option="ampliacion"><span class="option-icon">📸</span><div class="option-label">Ampliación</div></div>
-                        <div class="option-btn" data-option="impresion"><span class="option-icon">🖼️</span><div class="option-label">Impresión</div></div>
+                        <div class="option-btn" data-option="impresion_antes"><span class="option-icon">🕘</span><div class="option-label">Impresión antes</div></div><div class="option-btn" data-option="impresion"><span class="option-icon">🖼️</span><div class="option-label">Impresión ahora</div></div>
                         <div class="option-btn" data-option="redes_sociales"><span class="option-icon">📱</span><div class="option-label">Redes Sociales</div></div>
                         <div class="option-btn" data-option="invitaciones_web"><span class="option-icon">💌</span><div class="option-label">Inv. Web</div></div>
                         <div class="option-btn" data-option="descartada"><span class="option-icon">🗑️</span><div class="option-label">Descartar</div></div>
@@ -405,7 +405,8 @@
                 const cats = selections[photo.name]?.categories || [];
                 if (activeFilter === 'selected' && !cats.some(c => c !== 'descartada')) return;
                 if (activeFilter === 'sin' && cats.length) return;
-                if (!['all','selected','sin'].includes(activeFilter) && !cats.includes(activeFilter)) return;
+                if (activeFilter === 'coinciden' && !(cats.includes('impresion') && cats.includes('impresion_antes'))) return;
+                if (!['all','selected','sin','coinciden'].includes(activeFilter) && !cats.includes(activeFilter)) return;
                 shown++;
                 const card = document.createElement('div');
                 card.className = 'photo-card';
@@ -470,11 +471,16 @@
         });
 
         function updateStats() {
-            const counts = { ampliacion:0, impresion:0, redes_sociales:0, invitaciones_web:0, descartada:0 };
+            const counts = { ampliacion:0, impresion_antes:0, impresion:0, redes_sociales:0, invitaciones_web:0, descartada:0 };
             Object.values(selections).forEach(s =>
                 (s.categories || []).forEach(cat => { if (counts[cat] !== undefined) counts[cat]++; }));
             Object.keys(counts).forEach(cat =>
                 document.getElementById(`count-${cat}`).textContent = counts[cat]);
+            const same = Object.values(selections).filter(s => s.categories?.includes('impresion') && s.categories?.includes('impresion_antes')).length;
+            document.getElementById('count-coinciden').textContent = same;
+            document.querySelector('[data-filter="impresion_antes"]').textContent = '🕘 Impresión antes (' + counts.impresion_antes + ')';
+            document.querySelector('[data-filter="impresion"]').textContent = '🖼️ Impresión ahora (' + counts.impresion + ')';
+            document.querySelector('[data-filter="coinciden"]').textContent = '🔁 Coinciden (' + same + ')';
             return counts;
         }
 
@@ -494,12 +500,13 @@
             msg += `📊 RESUMEN:\n`;
             msg += `   Total de fotos: ${photos.length}\n`;
             msg += `   📸 Ampliación: ${stats.ampliacion}\n`;
-            msg += `   🖼️  Impresión: ${stats.impresion}\n`;
+            msg += `   🕘 Impresión antes: ${stats.impresion_antes}\n`;
+            msg += `   🖼️ Impresión ahora: ${stats.impresion}\n`;
             msg += `   📱 Redes sociales: ${stats.redes_sociales}\n`;
             msg += `   💌 Inv. web: ${stats.invitaciones_web}\n`;
             msg += `   ❌ Descartadas: ${stats.descartada}\n\n`;
             const cats = {
-                ampliacion:'📸 AMPLIACIÓN', impresion:'🖼️  IMPRESIÓN',
+                ampliacion:'📸 AMPLIACIÓN', impresion_antes:'🕘 IMPRESIÓN ANTES', impresion:'🖼️ IMPRESIÓN AHORA',
                 redes_sociales:'📱 REDES SOCIALES', invitaciones_web:'💌 INV. WEB', descartada:'❌ DESCARTADAS'
             };
             Object.keys(cats).forEach(cat => {
@@ -520,7 +527,7 @@
                 notas.forEach(p => { msg += `   📸 Foto #${p.num}: ${selections[p.name].notes}\n`; });
             }
             msg += `\n📅 Generado: ${new Date().toLocaleString('es-MX')}\n`;
-            return document.getElementById('currentList').textContent + '\n' + msg;
+            return 'Impresión antes / Impresión ahora' + '\n' + msg;
         }
 
         function limpiarSeleccion() {
@@ -530,7 +537,7 @@
         }
 
         function getCategoryLabel(cat) {
-            return { ampliacion:'Ampliación', impresion:'Impresión', redes_sociales:'Redes',
+            return { ampliacion:'Ampliación', impresion_antes:'Impresión antes', impresion:'Impresión ahora', redes_sociales:'Redes',
                      invitaciones_web:'Inv. Web', descartada:'Descartada' }[cat] || cat;
         }
 
@@ -549,7 +556,7 @@
             a.href=url; a.download=filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 3000);
         }
         function descargarReporte() { bajarArchivo(new Blob([textoReporte()],{type:'text/plain;charset=utf-8'}),'seleccion-evelyn.txt'); }
-        function descargarJSON() { bajarArchivo(new Blob([JSON.stringify({lista:document.getElementById('currentList').textContent,selecciones:selections},null,2)],{type:'application/json'}),'seleccion-evelyn.json'); }
+        function descargarJSON() { bajarArchivo(new Blob([JSON.stringify({lista:'Impresión antes / Impresión ahora',selecciones:selections},null,2)],{type:'application/json'}),'seleccion-evelyn.json'); }
         async function copiarReporte() {
             try {await navigator.clipboard.writeText(textoReporte()); alert('Resumen copiado');}
             catch(e) {alert('No se pudo copiar; usa Descargar reporte');}
@@ -575,12 +582,12 @@
         menu.addEventListener('toggle',()=>localStorage.setItem('evelyn_menu',menu.open?'open':'closed'));
         document.getElementById('photoModal').addEventListener('click', e => {if(e.target.id==='photoModal')closeModal()});
     </script>
-    <script src="photos_list.js?v=20261030-thumbs"></script>
+    <script src="photos_list.js?v=20261030-thumbs-ready"></script>
     <script src="default_selections.js?v=1"></script>
     <script>renderGallery(); updateStats();</script>
     <script src="visitas.js?v=1"></script>
     <script src="js/reliable-sync.js?v=20261030"></script>
-    <script src="js/selector-sb-inline.js?v=20261030-thumbs"></script>
+    <script src="js/selector-sb-inline.js?v=20261030-comparar"></script>
 <script src="js/foro7-footer.js?v=1"></script>
 </body>
 </html>
